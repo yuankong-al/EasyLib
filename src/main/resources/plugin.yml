@@ -1,0 +1,8 @@
+name: EasyLib
+version: '${version}'
+main: com.yuankong.easylib.EasyLib
+authors: [ yuankong ]
+description: easy to make mysql from EasySQL
+website: https://github.com/yuankong-al
+commands:
+  easy:
