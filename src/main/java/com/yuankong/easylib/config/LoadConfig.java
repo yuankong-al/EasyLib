@@ -3,7 +3,7 @@ package com.yuankong.easylib.config;
 import com.yuankong.easylib.EasyLib;
 import org.bukkit.configuration.Configuration;
 
-public class LoadConfig {
+public class LoadConfig{
     private static boolean enable;
     private static String driver;
     private static String url;
@@ -11,6 +11,7 @@ public class LoadConfig {
     private static String parameter;
     private static String username;
     private static String password;
+    private static boolean isShutdownManagerWhenClose;
 
     public static void load(){
         Configuration config = EasyLib.instance.getConfig();
@@ -21,7 +22,7 @@ public class LoadConfig {
         parameter = config.getString("mysql.parameter");
         username = config.getString("mysql.username");
         password = config.getString("mysql.password");
-
+        isShutdownManagerWhenClose = config.getBoolean("mysql.isShutdownManagerWhenClose");
     }
 
     public static void reload(){
@@ -55,5 +56,9 @@ public class LoadConfig {
 
     public static String getPassword() {
         return password;
+    }
+
+    public static boolean isIsShutdownManagerWhenClose() {
+        return isShutdownManagerWhenClose;
     }
 }

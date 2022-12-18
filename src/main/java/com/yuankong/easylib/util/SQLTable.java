@@ -9,6 +9,7 @@ import java.util.Set;
  * 底层是基于HashMap的表存储类，需要指定key类型
  *
  */
+@Deprecated
 public class SQLTable<k,c,v> {
     private final Map<k,HashMap<c,v>> map;
 

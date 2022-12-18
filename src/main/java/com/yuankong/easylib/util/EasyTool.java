@@ -1,5 +1,6 @@
 package com.yuankong.easylib.util;
 
+@Deprecated
 public class EasyTool {
     private final String tableName;
     private String[] columnNames;

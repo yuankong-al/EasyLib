@@ -2,11 +2,11 @@ package com.yuankong.easylib;
 
 import cc.carm.lib.easysql.EasySQL;
 import cc.carm.lib.easysql.api.SQLManager;
-import com.yuankong.easylib.Listener.EventHandler;
 import com.yuankong.easylib.config.LoadConfig;
 import com.yuankong.easylib.event.AfterLoadConfigEvent;
 import com.yuankong.easylib.event.ReloadConfigEvent;
 import com.yuankong.easylib.event.SQLManagerFinishEvent;
+import com.yuankong.easylib.util.Timer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -26,7 +26,7 @@ public final class EasyLib extends JavaPlugin {
         saveDefaultConfig();
         startMessage();
         LoadConfig.load();
-        Bukkit.getPluginManager().registerEvents(new EventHandler(),this);
+        //Bukkit.getPluginManager().registerEvents(new EventHandler(),this);
         Bukkit.getScheduler().runTask(this, ()-> onManager(0));
 
         if(LoadConfig.isEnable()){
@@ -40,6 +40,8 @@ public final class EasyLib extends JavaPlugin {
             AfterLoadConfigEvent event = new AfterLoadConfigEvent(LoadConfig.isEnable(), sqlManager);
             Bukkit.getPluginManager().callEvent(event);
         },10*20);
+
+        new Timer().start();
 
     }
 
@@ -81,6 +83,7 @@ public final class EasyLib extends JavaPlugin {
     @Override
     public void onDisable() {
         Bukkit.getConsoleSender().sendMessage("§a========EasyLib已关闭========");
+        EasySQL.shutdownManager(EasyLib.getSqlManager());
     }
 
     private void startMessage(){

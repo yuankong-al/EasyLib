@@ -6,5 +6,4 @@ mysql:
   parameter: "useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC"
   username: "root"
   password: "123456"
-
 #重载: /easy reload

@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.yuankong'
-version = '1.0'
+version = '1.2'
 
 repositories {
     mavenCentral()
@@ -19,7 +19,6 @@ dependencies {
     compileOnly 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
     api 'cc.carm.lib:easysql-api:0.4.6'
     api 'cc.carm.lib:easysql-impl:0.4.6'
-    api 'cc.carm.lib:easysql-beecp:0.4.6'
     api 'cc.carm.lib:easysql-hikaricp:0.4.6'
 }
 
