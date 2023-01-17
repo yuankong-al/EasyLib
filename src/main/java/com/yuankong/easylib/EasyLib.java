@@ -2,16 +2,22 @@ package com.yuankong.easylib;
 
 import cc.carm.lib.easysql.EasySQL;
 import cc.carm.lib.easysql.api.SQLManager;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+import com.yuankong.easylib.Listener.EventHandler;
+import com.yuankong.easylib.api.EasyLibApi;
+import com.yuankong.easylib.bungee.Channel;
 import com.yuankong.easylib.config.LoadConfig;
 import com.yuankong.easylib.event.AfterLoadConfigEvent;
 import com.yuankong.easylib.event.ReloadConfigEvent;
 import com.yuankong.easylib.event.SQLManagerFinishEvent;
-import com.yuankong.easylib.util.Timer;
+import com.yuankong.easylib.util.timer.Timer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 
@@ -19,6 +25,7 @@ public final class EasyLib extends JavaPlugin {
 
     public static Plugin instance;
     private static SQLManager sqlManager;
+    public static EventHandler eventHandler;
     int flag = 0;
     @Override
     public void onEnable() {
@@ -26,9 +33,11 @@ public final class EasyLib extends JavaPlugin {
         saveDefaultConfig();
         startMessage();
         LoadConfig.load();
-        //Bukkit.getPluginManager().registerEvents(new EventHandler(),this);
-        Bukkit.getScheduler().runTask(this, ()-> onManager(0));
-
+        eventHandler = new EventHandler();
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, Channel.REGISTER.getChannel());
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, Channel.REGISTER.getChannel(), eventHandler);
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, Channel.GENERAL.getChannel());
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, Channel.GENERAL.getChannel(), eventHandler);
         if(LoadConfig.isEnable()){
             createManager();
         }else{
@@ -36,10 +45,14 @@ public final class EasyLib extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage("未启用数据库");
         }
 
-        Bukkit.getScheduler().runTaskLater(this,()->{
+        registerChannel();
+        registerChannelAgain();
+        Bukkit.getScheduler().runTask(this,()->{
+            onManager(0);
             AfterLoadConfigEvent event = new AfterLoadConfigEvent(LoadConfig.isEnable(), sqlManager);
             Bukkit.getPluginManager().callEvent(event);
-        },10*20);
+            registerChannel();
+        });
 
         new Timer().start();
 
@@ -61,9 +74,6 @@ public final class EasyLib extends JavaPlugin {
                 LoadConfig.reload();
                 boolean endEnable = LoadConfig.isEnable();
 
-                /*if(Objects.nonNull(sqlManager)){
-                    Bukkit.getScheduler().runTaskAsynchronously(EasyLib.instance,()-> EasySQL.shutdownManager(sqlManager));
-                }*/
                 if (endEnable) {
                     sqlManager = null;
                     createManager();
@@ -82,8 +92,8 @@ public final class EasyLib extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Bukkit.getConsoleSender().sendMessage("§a========EasyLib已关闭========");
         EasySQL.shutdownManager(EasyLib.getSqlManager());
+        Bukkit.getConsoleSender().sendMessage("§4========EasyLib已关闭========");
     }
 
     private void startMessage(){
@@ -143,5 +153,25 @@ public final class EasyLib extends JavaPlugin {
                 }
             }
         }
+    }
+
+    public static void registerChannel(){
+        EasyLibApi.channels.forEach(((plugin, list) -> {
+            for(String channel:list){
+                ByteArrayDataOutput m = ByteStreams.newDataOutput();
+                m.writeUTF(channel);
+                EasyLib.instance.getServer().sendPluginMessage(EasyLib.instance,Channel.REGISTER.getChannel(), m.toByteArray());
+            }
+        }));
+    }
+    public static void registerChannelAgain(){
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(!EventHandler.isRegister){
+                    registerChannel();
+                }
+            }
+        }.runTaskLater(EasyLib.instance,5*20);
     }
 }

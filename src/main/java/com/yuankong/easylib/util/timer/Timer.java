@@ -1,4 +1,4 @@
-package com.yuankong.easylib.util;
+package com.yuankong.easylib.util.timer;
 
 import com.yuankong.easylib.EasyLib;
 import com.yuankong.easylib.api.EasyLibApi;
@@ -9,9 +9,10 @@ public class Timer extends BukkitRunnable {
     public void run() {
         if(!EasyLibApi.timerUtils.isEmpty()){
             EasyLibApi.timerUtils.forEach(((plugin, timerUtils) -> {
+                long times = System.currentTimeMillis();
                 for(TimerUtil timerUtil: timerUtils){
                     try{
-                        timerUtil.times();
+                        timerUtil.run(times);
                     }catch (Exception e){
                         plugin.getLogger().warning(e.getMessage());
                     }

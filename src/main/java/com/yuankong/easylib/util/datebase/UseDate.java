@@ -1,4 +1,4 @@
-package com.yuankong.easylib.util;
+package com.yuankong.easylib.util.datebase;
 
 import java.sql.ResultSet;
 

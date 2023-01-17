@@ -1,16 +1,49 @@
 package com.yuankong.easylib.Listener;
 
-import cc.carm.lib.easysql.EasySQL;
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
 import com.yuankong.easylib.EasyLib;
-import com.yuankong.easylib.config.LoadConfig;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.ServiceUnregisterEvent;
-import org.bukkit.scheduler.BukkitRunnable;
+import com.yuankong.easylib.api.EasyLibApi;
+import com.yuankong.easylib.bungee.Channel;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import java.util.Objects;
+public class EventHandler implements PluginMessageListener {
+    public static boolean isRegister = false;
+    @Override
+    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+        if(channel.equals(Channel.REGISTER.getChannel())){
+            ByteArrayDataInput msg = ByteStreams.newDataInput(message);
+            String str = msg.readUTF();
+            if(str.equals(Channel.SUCCESS.getChannel())){
+                isRegister = true;
+            }
+            if(str.equals(Channel.START.getChannel())){
+                EasyLib.registerChannel();
+                EasyLib.registerChannelAgain();
+            }
+        }
+        if(channel.equals(Channel.GENERAL.getChannel())){
+            EasyLibApi.bcMessages.forEach(((plugin, bcMessage) -> {
+                try {
+                    bcMessage.callBack(channel,message);
+                }catch (Exception e){
+                    plugin.getLogger().warning(e.getMessage());
+                }
+            }));
+        }
 
-public class EventHandler implements Listener {
-    @org.bukkit.event.EventHandler
+        EasyLibApi.channels.forEach(((plugin, list) -> {
+            for(String str:list){
+                if(channel.equals(str)){
+                    if(EasyLibApi.bcMessages.containsKey(plugin)){
+                        EasyLibApi.bcMessages.get(plugin).callBack(channel,message);
+                    }
+                }
+            }
+        }));
+    }
+    /*@org.bukkit.event.EventHandler
     public void onEvent(ServiceUnregisterEvent event) {
         if(LoadConfig.isIsShutdownManagerWhenClose()){
             new BukkitRunnable() {
@@ -23,5 +56,5 @@ public class EventHandler implements Listener {
             }.runTaskAsynchronously(EasyLib.instance);
         }
 
-    }
+    }*/
 }

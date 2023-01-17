@@ -1,5 +1,6 @@
 name: EasyLib
 version: '${version}'
+versionCode: '${status}'
 main: com.yuankong.easylib.EasyLib
 authors: [ yuankong ]
 description: easy to make mysql from EasySQL
