@@ -3,7 +3,12 @@ version: '${version}'
 versionCode: '${status}'
 main: com.yuankong.easylib.EasyLib
 authors: [ yuankong ]
-description: easy to make mysql from EasySQL
+description: easy to develop plugin
 website: https://github.com/yuankong-al
 commands:
   easy:
+
+#1.5：Timer新增日、周、月执行方法；新增兼容仓鼠经济
+#1.6:优化数据库连接的创建，之前的版本会因为十几个插件共用一个连接导致阻塞;新增指令构造器;新增龙核发包构造器;新增插件构造器
+#1.7:新增cron支持
+#1.7.1:bc部分新增数据库支持,新增bc配置文件

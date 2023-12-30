@@ -14,4 +14,5 @@ public interface TimerUtil {
     default void run(long currentTimeMillis){
         times(currentTimeMillis);
     }
+
 }

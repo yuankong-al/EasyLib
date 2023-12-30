@@ -6,8 +6,9 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.yuankong.easylib.EasyLib;
 import com.yuankong.easylib.bungee.BCMessage;
-import com.yuankong.easylib.bungee.Channel;
+import com.yuankong.easylib.config.LoadConfig;
 import com.yuankong.easylib.util.datebase.EasyTool;
+import com.yuankong.easylib.util.other.WcpeLibUtil;
 import com.yuankong.easylib.util.timer.TimerUtil;
 import com.yuankong.easylib.util.datebase.UseDate;
 import org.bukkit.Bukkit;
@@ -43,7 +44,6 @@ public class EasyLibApi {
             list.add(timerUtil);
             timerUtils.put(plugin,list);
         }
-
     }
     public static void registerTimer(Plugin plugin,List<TimerUtil> timerUtilList){
         timerUtils.put(plugin,timerUtilList);
@@ -91,6 +91,24 @@ public class EasyLibApi {
             m.writeUTF(str);
         }
         Bukkit.getServer().sendPluginMessage(EasyLib.instance,channel,m.toByteArray());
+    }
+
+    public static String getServerNameFromWCPELib(){
+        if (Bukkit.getPluginManager().isPluginEnabled("WcpeLib")) {
+            return WcpeLibUtil.getServerName();
+        }
+        return null;
+    }
+
+    public static String getSendRewardServer(){
+        return LoadConfig.getSendRewardServer();
+    }
+
+    public static boolean serverCanSendReword(){
+        if (getServerNameFromWCPELib() == null){
+            return false;
+        }
+        return getSendRewardServer().equals(getServerNameFromWCPELib());
     }
 
 }

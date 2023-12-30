@@ -1,9 +1,12 @@
-mysql:
+mysql:  #修改后不建议重载，直接重载有可能会出错，建议重启
   enable: true
-  driver: "com.mysql.jdbc.Driver"
+  driver: "com.mysql.cj.jdbc.Driver"
   url: "jdbc:mysql://localhost:3306/"
   database: "test"
   parameter: "useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC"  #自动包含问号"?",无需填写
   username: "root"
   password: "123456"
+
+other:
+  sendRewardServer: 'xxx' #附属插件奖励发放的服务器名(避免多个服务器都发一份，在此设置后，将在该服务器发放奖励)(检测的是wcpelib中的服务器名，所以这个插件也要配置)
 #重载: /easy reload

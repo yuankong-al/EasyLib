@@ -15,16 +15,14 @@ public class Timer extends BukkitRunnable {
                         timerUtil.run(times);
                     }catch (Exception e){
                         plugin.getLogger().warning(e.getMessage());
+                        e.printStackTrace();
                     }
                 }
             }));
         }
-
     }
 
     public void start(){
         this.runTaskTimerAsynchronously(EasyLib.instance,0,20);
     }
-
-
 }

@@ -1,5 +1,7 @@
 package com.yuankong.easylib.bungee;
 
+import cc.carm.lib.easysql.EasySQL;
+import cc.carm.lib.easysql.api.SQLManager;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -7,20 +9,32 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class BungeeCore extends Plugin implements Listener {
     List<String> channelList = new ArrayList<>();
+    Configuration config;
+    public static BungeeCore instance;
     @Override
     public void onEnable() {
+        instance = this;
+        this.saveConfig();
         this.getProxy().registerChannel(Channel.REGISTER.getChannel());
         this.getProxy().registerChannel(Channel.GENERAL.getChannel());
         this.getProxy().getPluginManager().registerListener(this, this);
+        BCLoadConfig.load();
         startMessage();
         getProxy().getScheduler().schedule(this, () -> {
             for(ServerInfo server:getProxy().getServers().values()){
@@ -89,5 +103,39 @@ public class BungeeCore extends Plugin implements Listener {
                 }
             }
         }
+    }
+
+    public void saveConfig(){
+        if(!getDataFolder().exists()){
+            getDataFolder().mkdirs();
+        }
+        File file = new File(getDataFolder(),"config.yml");
+        try {
+            if(!file.exists()){
+                InputStream in = this.getResourceAsStream("config.yml");
+                Files.copy(in, file.toPath());
+            }
+            config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Configuration getConfig() {
+        return config;
+    }
+
+    public static SQLManager createSqlManager(){
+        if (BCLoadConfig.isEnable()){
+            return EasySQL.createManager(BCLoadConfig.getDriver(),BCLoadConfig.getUrl()+BCLoadConfig.getDatabase()+"?"+BCLoadConfig.getParameter(),BCLoadConfig.getUsername(),BCLoadConfig.getPassword());
+        }
+        return null;
+    }
+
+    public static SQLManager createSqlManager(String driver,String url,String data,String parameter,String username,String password){
+        if (BCLoadConfig.isEnable()){
+            return EasySQL.createManager(driver,url+data+"?"+parameter,username,password);
+        }
+        return null;
     }
 }

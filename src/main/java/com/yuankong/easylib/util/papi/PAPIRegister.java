@@ -1,5 +1,6 @@
 package com.yuankong.easylib.util.papi;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 
@@ -27,14 +28,20 @@ public class PAPIRegister {
                 papi.map.forEach((str,papiUtil)->{
                     if(str.equals(params)){
                         s.append(papiUtil.setPAPI(player));
-
                     }
                 });
                 if(s.length() == 0){
+                    if (papi.papiUtils != null){
+                        return papi.papiUtils.setPAPI(player,params);
+                    }
                     return " ";
                 }
                 return s.toString();
             }
         }.register();
+    }
+
+    public static String getPAPIValue(OfflinePlayer player, String papi){
+        return PlaceholderAPI.setPlaceholders(player,papi);
     }
 }

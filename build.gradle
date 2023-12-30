@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.yuankong'
-version = '1.3'
+version = '1.7.1'
 status = System.currentTimeMillis()
 
 repositories {
@@ -13,6 +13,11 @@ repositories {
         name = 'spigotmc-repo'
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
     }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+
     maven { url 'https://github.com/CarmJos/EasySQL/blob/repo/' }
     maven {
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
@@ -21,15 +26,38 @@ repositories {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
+    maven { url 'https://jitpack.io' }
+    maven {
+        url = "https://maven.airgame.net/maven-public/"
+    }
+    /*maven {
+        url "https://maven.airgame.net/maven-public"
+    }*/
 }
 
 dependencies {
-    compileOnly 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
     api 'cc.carm.lib:easysql-api:0.4.6'
     api 'cc.carm.lib:easysql-impl:0.4.6'
     api 'cc.carm.lib:easysql-hikaricp:0.4.6'
     compileOnly 'me.clip:placeholderapi:2.11.2'
     compileOnly 'net.md-5:bungeecord-api:1.12-SNAPSHOT'
+    compileOnly files('lib/PlayerPoints.jar')
+    compileOnly "com.github.MilkBowl:VaultAPI:1.7"
+    api 'jep:jep:2.24'
+    //compileOnly 'cn.hamster3:HamsterCurrency:2.0.12-SNAPSHOT'
+    compileOnly files('lib/ProtocolLib[前置].jar')
+    compileOnly files('lib/[插件]DragonCore-2.6.1.5.jar')
+    implementation ('org.quartz-scheduler:quartz:2.3.2'){
+        exclude group: 'com.zaxxer'
+        exclude group: 'com.mchange'
+    }
+    compileOnly files('lib/Wcpelib[插件前置].jar')
+    compileOnly files('lib/BungeeCord.jar')
+    compileOnly files('lib/【经济】HamsterCurrency.jar')
+    //api 'com.cronutils:cron-utils:9.2.1'
+    //api 'com.zaxxer:HikariCP:4.0.3'
+    //compileOnly 'org.jetbrains:annotations:21.0.0'
 }
 
 def targetJavaVersion = 8

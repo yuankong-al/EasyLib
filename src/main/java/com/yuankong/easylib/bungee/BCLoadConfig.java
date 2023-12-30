@@ -1,9 +1,10 @@
-package com.yuankong.easylib.config;
+package com.yuankong.easylib.bungee;
 
 import com.yuankong.easylib.EasyLib;
-import org.bukkit.configuration.Configuration;
+import net.md_5.bungee.config.Configuration;
 
-public class LoadConfig{
+
+public class BCLoadConfig {
     private static boolean enable;
     private static String driver;
     private static String url;
@@ -15,7 +16,7 @@ public class LoadConfig{
     private static String sendRewardServer;
 
     public static void load(){
-        Configuration config = EasyLib.instance.getConfig();
+        Configuration config = BungeeCore.instance.getConfig();
         enable = config.getBoolean("mysql.enable");
         driver = config.getString("mysql.driver");
         url = config.getString("mysql.url");
